@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema
 
 const NoteSchema = Schema({
-  text: String,
+  text: {type: String, required: true},
+  creator: {type: Schema.Types.ObjectId, ref: 'User', required: true},
   date: {type: Date, default: Date.now}
 })
 

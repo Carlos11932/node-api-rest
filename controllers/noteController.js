@@ -1,4 +1,5 @@
 const NoteRepository = require('../repositories/noteRepository')
+const UserRepository = require('../repositories/userRepository')
 
 function getNote(req, res){
   let noteId = req.params.noteId;
@@ -25,12 +26,20 @@ function getNotes(req, res){
 
 function createNote(req, res){
   let text = req.body.text;
-  NoteRepository.addNote(text, (err, noteStored) =>{
+  let userId = req.params.userId;
+  UserRepository.getUser(userId, (err) => {
     if(err){
-      res.status(500).send({message:`Error al guardar en DB: ${err} `});
+      res.status(500).send({message:`Error al realizar la petición: ${err} `});
     }
     else{
-      res.status(200).send({note: noteStored});
+      NoteRepository.addNote(text, userId, (err, noteStored) =>{
+        if(err){
+          res.status(500).send({message:`Error al guardar en DB: ${err} `});
+        }
+        else{
+          res.status(200).send({note: noteStored});
+        }
+      });
     }
   });
 }
